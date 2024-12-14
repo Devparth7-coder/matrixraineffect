@@ -13,7 +13,7 @@
             color: lime;
             font-family: monospace;
         }
-        
+
         canvas {
             display: block;
         }
@@ -27,18 +27,23 @@
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const fontSize = 16;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = Array(columns).fill(1);
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+        let fontSize = 16;
+        let columns, drops;
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
         let userTypedText = '';
 
+        // Function to resize the canvas and reset drops
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            columns = Math.floor(canvas.width / fontSize);
+            drops = Array(columns).fill(1); // Reset drops
+        }
+
+        // Function to draw the matrix rain
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Create fade effect
 
             ctx.fillStyle = 'lime';
             ctx.font = `${fontSize}px monospace`;
@@ -57,19 +62,13 @@
             }
         }
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.random() * canvas.height / fontSize;
-            }
-        }
-
+        // Function to handle color change when user clicks on canvas
         function changeRainColor(event) {
             const colors = ['lime', 'cyan', 'magenta', 'yellow', 'red'];
             ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
         }
 
+        // Function to capture typed text by the user
         function captureTypedText(event) {
             if (event.key === 'Backspace') {
                 userTypedText = userTypedText.slice(0, -1);
@@ -78,9 +77,13 @@
             }
         }
 
+        // Initial resize and event listeners
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('click', changeRainColor);
         window.addEventListener('keydown', captureTypedText);
+
+        // Initial call to set up canvas and start animation
+        resizeCanvas();
         setInterval(draw, 50);
     </script>
 </body>
